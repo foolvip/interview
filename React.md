@@ -150,3 +150,17 @@ JSX 是JavaScript XML 的简写。JSX是一个 JavaScript 的语法扩展。JSX�
 ### react中使用typescript
 https://simonknott.de/articles/Using-TypeScript-with-React.html  
 TypeScript 是 JavaScript 的超集。TypeScript通过类型注解提供编译时的静态类型检查。
+
+### Why import React from “react” in a functional component?
+https://hackernoon.com/why-import-react-from-react-in-a-functional-component-657aed821f7a   
+函数组件中使用的JSX语法只是语法糖，最终会被转译成纯粹的js语法，因此在babel转译之后，我们的代码就变成了：
+```js
+var App = function App() {
+  return React.createElement(
+    "div",
+    null,
+    "Hello World!!!"
+  );
+};
+```
+这里出现了React.createElement，这就是为什么我们需要在函数式组件开头引入React的原因。

@@ -75,3 +75,106 @@ https://zhuanlan.zhihu.com/p/44438844
 ### webpack配置用的webpack.optimize.UglifyJsPlugin,有没有觉得压缩速度很慢，有什么办法提升速度。
 ### webpack的一些原理和机制，怎么实现的
 ### babel把es6转换成es5或者es3之类的原理，有没有研究
+
+### webpack中，hash,chunkhash, contenthash的区别是什么？
+参考链接：https://www.cnblogs.com/skychx/p/webpack-hash-chunkhash-contenthash.html   
+#### hash
+hash计算是跟整个项目的构建相关， ，我们做一个简单的 demo。文件目录如下：  
+```js
+src/
+├── index.css
+├── index.html
+├── index.js
+└── utils.js
+```
+webpack 的核心配置如下（省略了一些 module 配置信息）：
+```js
+{
+    entry: {
+        index: "../src/index.js",
+        utils: '../src/utils.js',
+    },
+    output: {
+        filename: "[name].[hash].js",  // 改为 hash
+    },
+    
+    ......
+    
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: 'index.[hash].css' // 改为 hash
+        }),
+    ]
+}
+```
+生成的文件名如下：
+![hash1](./imgs/webpack/hash1.jpg)    
+我们可以发现，生成文件的 hash 和项目的构建 hash 都是一模一样的。
+#### chunkhash
+因为 hash 是项目构建的哈希值，项目中如果有些变动，hash 一定会变，比如说我改动了 utils.js 的代码，index.js 里的代码虽然没有改变，但是大家都是用的同一份 hash。hash 一变，缓存一定失效了，这样子是没办法实现 CDN 和浏览器缓存的。    
+chunkhash 就是解决这个问题的，它根据不同的入口文件(Entry)进行依赖文件解析、构建对应的 chunk，生成对应的哈希值。      
+我们再举个例子，我们对 utils.js 里文件进行改动：
+```js
+export function square(x) {
+    return x * x;
+}
+
+// 增加 cube() 求立方函数
+export function cube(x) {
+    return x * x * x;
+}
+```
+然后把 webpack 里的所有 hash 改为 chunkhash：
+```js
+{
+    entry: {
+        index: "../src/index.js",
+        utils: '../src/utils.js',
+    },
+    output: {
+        filename: "[name].[chunkhash].js", // 改为 chunkhash
+    },
+          
+    ......
+    
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: 'index.[chunkhash].css' // // 改为 chunkhash
+        }),
+    ]
+}
+```
+构建结果如下:   
+![chunkhash1](./imgs/webpack/chunkhash1.jpg)   
+我们可以看出，chunk 0 的 hash 都是一样的，chunk 1 的 hash 和上面的不一样。     
+假设我又把 utils.js 里的 cube() 函数去掉，再打包：
+![chunkhash2](./imgs/webpack/chunkhash2.jpg)  
+对比可以发现，只有 chunk 1 的 hash 发生变化，chunk 0 的 hash 还是原来的。   
+#### contenthash
+我们更近一步，index.js 和 index.css 同为一个 chunk，如果 index.js 内容发生变化，但是 index.css 没有变化，打包后他们的 hash 都发生变化，这对 css 文件来说是一种浪费。如何解决这个问题呢？    
+contenthash 将根据资源内容创建出唯一 hash，也就是说文件内容不变，hash 就不变。    
+我们修改一下 webpack 的配置：  
+```js
+{
+    entry: {
+        index: "../src/index.js",
+        utils: '../src/utils.js',
+    },
+    output: {
+        filename: "[name].[chunkhash].js",
+    },
+      
+    ......
+    
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: 'index.[contenthash].css' // 这里改为 contenthash
+        }),
+    ]
+}
+```
+我们对 index.js 文件做了 3 次修改（就是改了改 log 函数的输出内容，过于简单就先不写了），然后分别构建，结果截图如下：
+### 一句话总结：
+hash 计算与整个项目的构建相关；    
+chunkhash 计算与同一 chunk 内容相关；    
+contenthash 计算与文件内容本身相关。    

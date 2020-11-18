@@ -252,86 +252,13 @@ CommonJS 是主要为了 js 在后端的表现制定的，它不适合前端；
 CommonJS 其实也有浏览器端的实现，原理是先将所有模块都定义好并通过 id 索引方便的在浏览器环境中进行解析；
 CommonJS 是以在浏览器环境之外构建 javaScript 生态系统为目标而产生的写一套规范，主要是为了解决 javaScript 的作用域问题而定义的模块形式，可以使每个模块它自身的命名空间中执行，该规范的主要内容是，模块必须通过 module.exports 导出对外的变量或者接口，通过 require() 来导入其他模块的输出到当前模块的作用域中；目前在服务器和桌面环境中，node.js 遵循的是 CommonJS 的规范；CommonJS 对模块的加载时同步的；    
 #### 意义
-js之前没有模块化概念，主要命名冲突、模块依赖问题。
-### js的节流和防抖动  
-  知乎解释：https://zhuanlan.zhihu.com/p/38313717  
-  理解动画demo：http://demo.nimius.net/debounce_throttle/   
-  https://mp.weixin.qq.com/s/Vkshf-nEDwo2ODUJhxgzVA  
-  
-  ```js
-  <!-- 防抖 -->
-  <!-- 应用场合：提交按钮的点击事件，input输入，window触发resize的时候，不断的调整浏览器窗口大小会不断的触发这个事件，用防抖来让其只触发一次 -->
-  function debounce(func, delay) {
-    let timeout;
-    return function(e) {
-      clearTimeout(timeout);
-      let context = this, args = arguments;
-      timeout = setTimeout(function() {
-        func.apply(context, args);
-      }, delay);
-    }
-  }
-
-  var validate = debounce(function(e) {
-    console.log("change", e.target.value, new Date-0)
-  }, 380);
-  // 绑定监听
-  document.querySelector("input").addEventListener('input', validate);
-
-  <!-- 节流 -->
-  <!-- 应用场景：频繁触发的事件中，如resize, touchmove, mousemove, scroll。throttle 会强制函数以固定的速率执行。因此这个方法比较适合应用于动画相关的场景。 -->
-  // 时间戳版(第一次就触发)
-  function throttle(fn, wait) {
-    var previous = Data.now();
-    return function() {
-      let now = Data.now();
-      let context = this;
-      let args = arguments;
-      if (now - prevvious > wait) {
-        fn.apply(context, args);
-        previous = now;
-      }
-    }
-  }
-  // 定时器版本
-  function throttle(fn, threshold) {
-    let timeout;
-    return function() {
-      let context = this;
-      let args = arguments;
-      if(!timeout) {
-        timeout = setTimeout(() => {
-          fn.apply(context, args);
-          timeout = null;
-        }，threshold);
-      }
-    }
-  }
-  
-  // 合并版本
-  function throttle(fn, threshhold) {
-    var timeout;
-    var start = +new Date();
-    var threshhold = threshhold || 160;
-    return function() {
-      var context = this, args = arguments, curr = +new Date();
-      clearTimeout(timeout);
-      if (curr - start >= threshhold) {
-        console.log("now", curr, curr - start) //注意这里相减的结果，都差不多是160左右
-        fn.apply(context, args);
-        start = curr;
-      } else {
-        <!-- 让方法在脱离事件后也能执行一次 -->
-        timeout = setTimeout(function(){
-          fn.apply(context, args) 
-        }, threshhold);
-      }
-    }
-  }
-  ```
+js之前没有模块化概念，主要命名冲突、模块依赖问题。  
 - js事件执行机制，event loop， microtask, task queue;
 - Ajax请求方式（XMLHttpRequest原生写法）
 - 面向对象的理解
+
+
+
 ### js事件循环以及异步执行顺序
 https://blog.csdn.net/cc18868876837/article/details/97107219   
 https://www.bilibili.com/video/av21771455?from=search&seid=1679380112698787971   
@@ -373,3 +300,8 @@ undefined 在 ES5 中已经是全局对象的一个只读（read-only）属性�
 ```
 2.为什么选择void 0 作为undefined的替代  
 void 运算符能对给定的任何表达式进行求值，然后返回 undefined。如 void (2), void (‘hello’)。并且void是不能被重写的。但为什么是void 0 呢，**void 0 是表达式中最短**的。用 void 0 代替 undefined 能节省字节。不少 JavaScript 压缩工具在压缩过程中，正是将 undefined 用 void 0 代替掉了。
+
+### for、for in 、for of
+- for：数组边界(长度)问题，遍历数组
+- for in：对象（原型属性也会被遍历）、数组、字符串（不能遍历32位编码字符，只能遍历16位字符）
+- for of：只能用于遍历JavaScript的内置对象，不能遍历自定义对象，数组、对象

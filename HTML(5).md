@@ -84,6 +84,83 @@ Standards（标准）模式（也就是严格呈现模式）用于呈现遵循�
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <!-- 针对WebApp全屏模式，隐藏状态栏/设置状态栏颜色，content的值为default | black | black-translucent -->
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+
+<!-- 例子 -->
+作者：叶非叶
+链接：https://zhuanlan.zhihu.com/p/80357141
+来源：知乎
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+<meta charset="utf-8"> <!-- 设置文档字符编码 -->
+<meta http-equiv="x-ua-compatible" content="ie=edge"><!-- 告诉IE浏览器，IE8/9及以后的版本都会以最高版本IE来渲染页面。 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><!-- 指定页面初始缩放比例。-->
+ 
+<!-- 上述3个meta标签须放在head标签最前面;其它head内容放在其后面，如link标签-->
+ 
+<!-- 允许控制加载资源 -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'">
+<!-- 尽可能早的放在文档 -->
+<!-- 只适用于下面这个标签的内容 -->
+ 
+<!-- 使用web应用程序的名称(当网站作为一个应用程序的时候)-->
+<meta name="application-name" content="Application Name">
+ 
+<!-- 页面的简短描述(限150个字符)-->
+<!-- 在某些情况下这个描述作为搜索结果中所示的代码片段的一部分。-->
+<meta name="description" content="A description of the page">
+ 
+<!-- 控制搜索引擎爬行和索引的行为 -->
+<meta name="robots" content="index,follow,noodp"><!-- 所有搜索引擎 -->
+<meta name="googlebot" content="index,follow"><!-- 谷歌 -->
+ 
+<!-- 告诉谷歌搜索框不显示链接 -->
+<meta name="google" content="nositelinkssearchbox">
+ 
+<!-- 告诉谷歌不要翻译这个页面 -->
+<meta name="google" content="notranslate">
+ 
+<!-- Google网站管理员工具的特定元标记，核实对谷歌搜索控制台所有权 -->
+<meta name="google-site-verification" content="verification_token">
+ 
+<!-- 说明用什么软件构建生成的网站，(例如,WordPress,Dreamweaver) -->
+<meta name="generator" content="program">
+ 
+<!-- 简短描述你的网站的主题 -->
+<meta name="subject" content="your website's subject">
+ 
+<!-- 很短(10个词以内)描述。主要学术论文 -->
+<meta name="abstract" content="">
+ 
+<!-- 完整的域名或网址 -->
+<meta name="url" content="https://example.com/">
+ 
+<meta name="directory" content="submission">
+ 
+<!-- 对当前页面一个等级衡量，告诉蜘蛛当前页面在整个网站中的权重到底是多少。General是一般页面，Mature是比较成熟的页面，Restricted代表受限制的。 -->
+<meta name="rating" content="General">
+ 
+<!-- 隐藏发送请求时请求头表示来源的referrer字段。 -->
+<meta name="referrer" content="no-referrer">
+ 
+<!-- 禁用自动检测和格式的电话号码 -->
+<meta name="format-detection" content="telephone=no">
+ 
+<!-- 通过设置“off”,完全退出DNS队列 -->
+<meta http-equiv="x-dns-prefetch-control" content="off">
+ 
+<!-- 在客户端存储 cookie，web 浏览器的客户端识别-->
+<meta http-equiv="set-cookie" content="name=value; expires=date; path=url">
+ 
+<!-- 指定要显示在一个特定框架中的页面 -->
+<meta http-equiv="Window-Target" content="_value">
+ 
+<!-- 地理标签 -->
+<meta name="ICBM" content="latitude, longitude">
+<meta name="geo.position" content="latitude;longitude">
+<meta name="geo.region" content="country[-state]"><!-- 国家代码 (ISO 3166-1): 强制性, 州代码 (ISO 3166-2): 可选; 如 content="US" / content="US-NY" -->
+<meta name="geo.placename" content="city/town"><!-- 如 content="New York City" -->
+
 ```
 
 属性包括：
@@ -132,12 +209,16 @@ DOCTYPE声明、新增的结构元素、功能元素
 ```js
 1. <iframe>优点：
   解决加载缓慢的第三方内容如图标和广告等的加载问题
-  Security sandbox
+  Security sandbox：隔离上下文
   并行加载脚本
 2. <iframe>的缺点：
  iframe会阻塞主页面的Onload事件；
- 即时内容为空，加载也需要时间
- 没有语意
+ 即时内容为空，加载也需要时间;
+ 没有语意;
+ 数据通信麻烦；
+ 跨域问题（若非同源，会受到三种跨域限制：一是ajax请求限制；二是DOM无法获得；三是Cookie、LocalStorage 和 IndexDB 无法读取。）；
+弹框样式：position:relation；定位不准
+加载但也应用时，切换iframe内嵌应用路由，浏览器回退，地址栏URL无变化
 ```
 ### 简述一下 src 与 href 的区别
 href 是指向网络资源所在位置，建立和当前元素（锚点）或当前文档（链接）之间的链接，用于超链接。   
@@ -281,10 +362,14 @@ XSS攻击，通常指黑客通过“HTML注入”篡改了网页，插入了恶�
 - 多表查询 union
 ### 为什么离开上家公司
 地理位置、业务调整、换个环境
+### 工作流程
+需求评审会（需求确认）、技术评审会（前后端约定）、测试用例评审会、 开发、测试、上线、迭代回顾会议 
 ### 提问环节
 - 前端有几个人
 - 技术框架
 - 开发模式
+- code review
+- 技术分享会
 ### 对hr的提问
 - 调薪次数
 - 五险一金（公积金：缴纳基数，缴纳比例， 五险：缴纳基数，缴纳比例）
