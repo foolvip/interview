@@ -305,3 +305,16 @@ void 运算符能对给定的任何表达式进行求值，然后返回 undefine
 - for：数组边界(长度)问题，遍历数组
 - for in：对象（原型属性也会被遍历）、数组、字符串（不能遍历32位编码字符，只能遍历16位字符）
 - for of：只能用于遍历JavaScript的内置对象，不能遍历自定义对象，数组、对象
+
+### 严格模式
+use strict 是一种 ECMAscript5 添加的（严格）运行模式，这种模式使得 Javascript 在更严格的条件下运行。
+
+### new 操作符
+在js中,new()常被用来创建一个用户定义的对象类型的实例或具有构造函数的内置对象的实例
+1. 创建一个简单JavaScript空对象（即{}）；
+2. 链接该对象到另一个对象 （即设置该对象的_proto_为构造函数的prototype）；
+3. 执行构造函数,将构造函数内的this作用域指向1步骤中新创建的空对象{}；
+4. 如果构造函数有返回值，则return 返回值,否则return 空对象obj。
+### this理解
+https://github.com/AwesomeDevin/blog/issues/10   
+你不知道js上卷

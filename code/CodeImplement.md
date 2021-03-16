@@ -12,6 +12,138 @@ false 转为数字是 0      // Number(false) 返回0
 ```
 [ ] 转数字是0,转布尔值是true
 
+### call,apply,bind函数实现
+#### call
+```js
+// 自己实现一个es6的新类型 Symbol   fn = Symbol()
+function mySymbol(obj) {
+    // 不要问我为什么这么写，我也不知道就感觉这样nb
+    let unique = (Math.random() + new Date().getTime()).toString(32).slice(0, 8)
+        // 牛逼也要严谨
+    if (obj.hasOwnProperty(unique)) {
+        return mySymbol(obj) //递归调用
+    } else {
+        return unique
+    }
+}
+//接下来我们一并把多参数和执行完删除自定义方法删除掉一块搞定
+Function.prototype.myCall = function(context) {
+  console.log(this); // this指向调用myCall方法的对象
+    // 如果没有传或传的值为空对象 context指向window
+    context = context || window // context不传值时，默认window
+    let fn = mySymbol(context) // 
+    context[fn] = this //给context添加一个方法即是this，调用该方法时this便指向context
+    // 处理参数 去除第一个参数this 其它传入fn函数
+    let arg = [...arguments].slice(1) //[...xxx]把类数组变成数组，arguments为啥不是数组自行搜索 slice返回一个新数组
+    context[fn](...arg) //执行fn，this便指向context了
+    delete context[fn] //删除方法
+}
+
+let Person = {
+    name: 'Tom',
+    say(age) {
+        console.log(this)
+        console.log(`我叫${this.name}我今年${age}`)
+    }
+}
+
+Person1 = {
+    name: 'Tom1'
+}
+
+Person.say.call(Person1, 18)//我叫Tom1我今年18
+```
+#### apply
+```js
+  Function.prototype.myApply = function(context) {
+      // 如果没有传或传的值为空对象 context指向window
+      if (typeof context === "undefined" || context === null) {
+          context = window
+      }
+      let fn = mySymbol(context)
+      context[fn] = this //给context添加一个方法 指向this
+          // 处理参数 去除第一个参数this 其它传入fn函数
+      let arg = [...arguments].slice(1) //[...xxx]把类数组变成数组，arguments为啥不是数组自行搜索 slice返回一个新数组
+      context[fn](...arg) //执行fn
+      delete context[fn] //删除方法
+
+  }
+
+```
+#### bind
+特点 :
+1. 函数调用，改变this 
+2. 返回一个绑定this的函数
+3. 接收多个参数
+4. 支持柯里化形式传参 fn(1)(2)
+```js
+Function.prototype.bind = function(context) {
+  //返回一个绑定this的函数，我们需要在此保存this
+  let self = this
+  // 可以支持柯里化传参，保存参数
+  let arg = [...arguments].slice(1)
+      // 返回一个函数
+  return function() {
+    //同样因为支持柯里化形式传参我们需要再次获取存储参数
+    let newArg = [...arguments]
+    console.log(newArg)
+    // 返回函数绑定this，传入两次保存的参数
+    //考虑返回函数有返回值做了return
+    return self.apply(context, arg.concat(newArg))
+  }
+}
+// 搞定测试
+let fn = Person.say.bind(Person1)
+fn()
+fn(18)
+
+```
+
+### 实现new
+https://github.com/mqyqingfeng/Blog/issues/13  
+https://juejin.cn/post/6844903704663949325#heading-6  
+```js
+function objectFactory() {
+  var obj = new Object(),
+  Constructor = [].shift.call(arguments);
+  obj.__proto__ = Constructor.prototype;
+  var ret = Constructor.apply(obj, arguments);
+  return typeof ret === 'object' ? ret : obj;  // 判断原因如下
+};
+
+// ----- 例子解释 ----------------- 构造函数返回了一个对象：
+function Otaku (name, age) {
+    this.strength = 60;
+    this.age = age;
+
+    return {
+        name: name,
+        habit: 'Games'
+    }
+}
+
+var person = new Otaku('Kevin', '18');
+
+console.log(person.name) // Kevin
+console.log(person.habit) // Games
+console.log(person.strength) // undefined
+console.log(person.age) // undefined
+// ----- 例子 2 -------------- 构造函数返回了一个基本类型的值
+function Otaku (name, age) {
+    this.strength = 60;
+    this.age = age;
+
+    return 'handsome boy';
+}
+
+var person = new Otaku('Kevin', '18');
+
+console.log(person.name) // undefined
+console.log(person.habit) // undefined
+console.log(person.strength) // 60
+console.log(person.age) // 18
+
+```
 ### js的节流和防抖动  
   知乎解释：https://zhuanlan.zhihu.com/p/38313717  
   理解动画demo：http://demo.nimius.net/debounce_throttle/   
