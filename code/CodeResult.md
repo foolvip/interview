@@ -34,8 +34,4 @@ const unboundGetX = module.getX;
 console.log(unboundGetX()); // The function gets invoked at the global scope(该函数在全局范围内被调用)
 // output: undefined
 ```
-### call、apply、bind
-#### call
-```js
 
-```

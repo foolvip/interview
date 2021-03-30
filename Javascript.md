@@ -182,6 +182,7 @@ https://blog.csdn.net/cc18868876837/article/details/81211729
 - 动态原型模式
 - 寄生构造函数模式
 - 稳妥构造函数模式
+
 ### 检测对象属性存在于实例中还是原型中
 - 实例：obj.hasOwnProperty(name);
 - 原型中：!obj.hasOwnProperty(name) && (name in obj);

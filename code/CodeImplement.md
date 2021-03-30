@@ -518,3 +518,259 @@ var f = function(s){
 }
 
 ```
+
+### 继承
+https://segmentfault.com/a/1190000015727237     
+https://segmentfault.com/a/1190000015216289  
+#### 原型链继承：（核心：将父类的实例作为子类的原型）
+优点：父类方法可以复用   
+缺点：  
+- 父类的引用属性会被所有子类实例共享
+- 子类构建实例时不能向父类传递参数
+ ```js
+  // 父类
+  function Person(name,age) {
+    this.name = name || 'unknow'
+    this.age = age || 0
+  }
+  
+  // 为父类新曾一个方法
+  Person.prototype.say = function() {         // 新增的代码
+      console.log('I am a person')
+  }
+  
+  // 子类
+  function Student(name){
+    this.name = name
+    this.score = 80
+  }
+  
+  // 继承 注意,继承必须要写在子类方法定义的前面
+  Student.prototype = new Person()
+  
+  // 为子类新增一个方法(在继承之后,否则会被覆盖)
+  Student.prototype.study = function () {     // 新增的代码
+      console.log('I am studing')
+  }
+
+ ```
+ 缺点示例：
+ ```js
+ // 父类
+function Person() {
+  this.hobbies = ['music','reading']
+}
+// 子类
+function Student(){}
+// 继承
+Student.prototype = new Person()
+
+// 使用
+var stu1 = new Student()
+var stu2 = new Student()
+
+stu1.hobbies.push('basketball')
+
+console.log(stu1.hobbies)   // music,reading,basketball
+console.log(stu2.hobbies)   // music,reading,basketball
+ ```
+#### 构造函数继承：（核心：将父类构造函数的内容复制给了子类的构造函数。这是所有继承中唯一一个不涉及到prototype的继承。 ）
+SuperType.call(SubType);
+优点：和原型链继承完全反过来。
+- 父类的引用属性不会被共享   
+- 子类构建实例时可以向父类传递参数   
+缺点：父类的方法不能复用，子类实例的方法每次都是单独创建的  
+```js
+// 父类
+function Person() {
+  this.hobbies = ['music','reading']
+}
+// 子类
+function Student(){
+    Person.call(this)              // 新增的代码
+}
+
+// 使用
+var stu1 = new Student()
+var stu2 = new Student()
+stu1.hobbies.push('basketball')
+console.log(stu1.hobbies)   // music,reading,basketball
+console.log(stu2.hobbies)   // music,reading
+```
+子类给父类传参数
+```js
+// 父类
+function Person(name) {
+  this.name = name              // 新增的代码
+}
+// 子类
+function Student(name){
+    Person.call(this,name)      // 改动的代码
+}
+// 使用
+var stu1 = new Student('lucy')
+var stu2 = new Student('lili')
+console.log(stu1.name)   // lucy
+console.log(stu2.name)   // lili
+
+```
+缺点
+```js
+// 缺点：函数也是引用类型，也没办法共享了；也就是说,每个实例里面的函数,虽然功能一样,但是却不是同一个函数,就相当于我们每实例化一个子类,就复制了一遍的函数代码
+// 父类
+function Person(name) {
+    this.say = function() {}    // 改动的代码
+}
+// 子类
+function Student(name){
+    Person.call(this,name)
+}
+// 使用
+var stu1 = new Student('lucy')
+var stu2 = new Student('lili')
+console.log(stu1.say === stu2.say)   // false   父类的函数,在子类的实例下是不共享的
+
+```
+
+#### 组合继承：（原型链继承 + 构造函数继承）
+利用原型链继承要共享的属性,利用构造函数继承要独享的属性,实现相对完美的继承，父类的方法可以被复用，父类的引用属性不会被共享，子类构建实例时可以向父类传递参数
+```js
+// 父类
+function Person() {
+    this.hobbies = ['music','reading']
+}
+// 父类函数
+Person.prototype.say = function() {console.log('I am a person')}
+// 子类
+function Student(){
+    Person.call(this)             // 构造函数继承(继承属性), 第二次调用Person
+}
+// 继承
+Student.prototype = new Person()  // 原型链继承(继承方法), 第一次调用Person
+
+```
+#### 原型式继承：（原型式继承的object方法本质上是对参数对象的一个浅复制）
+优点：父类方法可以复用   
+缺点：   
+- 父类的引用属性会被所有子类实例共享
+- 子类构建实例时不能向父类传递参数
+
+```js
+function object(o){
+  function F(){}
+  F.prototype = o;
+  return new F();
+}
+
+var person = {
+    name: "Nicholas",
+    friends: ["Shelby", "Court", "Van"]
+};
+
+var anotherPerson = Object.create(person);;
+anotherPerson.name = "Greg";
+anotherPerson.friends.push("Rob");
+
+var yetAnotherPerson = Object.create(person);;
+yetAnotherPerson.name = "Linda";
+yetAnotherPerson.friends.push("Barbie");
+alert(person.friends);   //"Shelby,Court,Van,Rob,Barbie"
+
+```
+#### 寄生式继承：
+核心：使用原型式继承获得一个目标对象的浅复制，然后增强这个浅复制的能力。   
+优缺点：仅提供一种思路，没什么优点
+```js
+function createAnother(original){ 
+    var clone=object(original);    //通过调用函数创建一个新对象
+    clone.sayHi = function(){      //以某种方式来增强这个对象
+        alert("hi");
+    };
+    return clone;                  //返回这个对象
+}
+
+var person = {
+    name: "Nicholas",
+    friends: ["Shelby", "Court", "Van"]
+};
+
+var anotherPerson = createAnother(person);
+anotherPerson.sayHi(); //"hi"
+```
+#### 寄生组合式继承：
+刚才说到组合继承有一个会两次调用父类的构造函数造成浪费的缺点，寄生组合继承就可以解决这个问题。
+
+```js
+function inheritPrototype(subType, superType){
+    var prototype = object(superType.prototype); // 创建了父类原型的浅复制
+    prototype.constructor = subType;             // 修正原型的构造函数
+    subType.prototype = prototype;               // 将子类的原型替换为这个原型
+}
+
+function SuperType(name){
+    this.name = name;
+    this.colors = ["red", "blue", "green"];
+}
+
+SuperType.prototype.sayName = function(){
+    alert(this.name);
+};
+
+function SubType(name, age){
+    SuperType.call(this, name);
+    this.age = age;
+}
+// 核心：因为是对父类原型的复制，所以不包含父类的构造函数，也就不会调用两次父类的构造函数造成浪费
+inheritPrototype(SubType, SuperType);
+SubType.prototype.sayAge = function(){
+    alert(this.age);
+}
+```
+#### ES6 Class extends
+核心： ES6继承的结果和寄生组合继承相似，本质上，ES6继承是一种语法糖。但是，寄生组合继承是先创建子类实例this对象，然后再对其增强；而ES6先将父类实例对象的属性和方法，加到this上面（所以必须先调用super方法），然后再用子类的构造函数修改this。
+
+```js
+class A {}
+
+class B extends A {
+  constructor() {
+    super();
+  }
+}
+```
+ES6实现继承的具体原理：
+```js
+class A {
+}
+
+class B {
+}
+
+Object.setPrototypeOf = function (obj, proto) {
+  obj.__proto__ = proto;
+  return obj;
+}
+
+// B 的实例继承 A 的实例
+Object.setPrototypeOf(B.prototype, A.prototype);
+
+// B 继承 A 的静态属性
+Object.setPrototypeOf(B, A);
+
+```
+ES6继承与ES5继承的异同：    
+相同点：本质上ES6继承是ES5继承的语法糖   
+不同点：  
+- ES6继承中子类的构造函数的原型链指向父类的构造函数，ES5中使用的是构造函数复制，没有原型链指向。
+- ES6子类实例的构建，基于父类实例，ES5中不是。
+
+### 创建对象（红P144）
+#### 工厂模式
+```js
+```
+#### 构造函数
+#### 原型模式
+#### 组合使用构造函数模式和原型模式
+#### 动态原型模式
+#### 寄生构造函数模式
+#### 稳妥构造函数模式
