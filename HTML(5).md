@@ -311,40 +311,4 @@ Connection: Upgrade
 Sec-WebSocket-Accept: HSmrc0sMlYUkAGmm5OPpG2HaGWk=
 Sec-WebSocket-Protocol: chat
 ```
-
-
-## Node.js
-### Nodejs,它有哪些缺点？
-事件驱动，通过闭包很容易实现客户端的生命活期。  
-不用担心多线程，锁，并行计算的问题  
-V8引擎速度非常快  
-对于游戏来说，写一遍游戏逻辑代码，前端后端通用  
-#### 缺点
-nodejs更新很快，可能会出现版本兼容  
-nodejs还不算成熟，还没有大制作  
-nodejs不像其他的服务器，对于不同的链接，不支持进程和线程操作  
-
-### mysql与mongodb的区别
-https://www.jianshu.com/p/56524b50b376
-
-
-## 安全
-### xss cross-site scripting跨域脚本攻击
-XSS攻击，通常指黑客通过“HTML注入”篡改了网页，插入了恶意的脚本， 从而在用户浏览网页时，控制用户浏览器的一种攻击。
-它允许恶意web用户将代码植入到提供给其它用户使用的页面中。其实在web前端方面，可以简单的理解为一种javascript代码注入。
-#### XSS攻击分为三种，分别是：
-1. Reflected XSS（基于反射的XSS攻击）：反射性XSS只是简单地把用户输入的数据“反射”给浏览器。也就是说，黑客往往需要诱使用户“点击”一个恶意链接，才能攻击成功。
-2. Stored XSS（基于存储的XSS攻击）：存储型XSS会把用户输入的数据“存储”在服务器端。这种XSS具有很强的稳定性。
-3. DOM-based or local XSS（基于DOM或本地的XSS攻击）：从效果上来说也是反射性XSS。通过修改页面的DOM节点形成的XSS，称之为DOM Based XSS。
-#### 防御方法
-- HttpOnly
-- 处理富文本
-- 输入检查
-- 输出检查
-- 使用innerHTML document.wirte的数据的时候 如果数据是用户输入的时候 需要对关键字进行过滤与转移。
-### CSRF跨站请求伪造
-网站的一些提交行为被黑客利用，在你访问黑客网站的时候进行的操作会被操作到其他网站。
-#### 防御方法
-- 验证码
-- Referer Check
-- 使用Token
+ 
