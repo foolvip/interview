@@ -237,10 +237,8 @@ src 是指向外部资源的位置，指向的内容将会嵌入到文档中当�
 - 调用localstorge、cookies等本地存储方式
 - localstorge 在另一个浏览上下文里被添加、修改或删除时，它都会触发一个事件，我们通过监听事件，控制它的值来进行页面信息通信； 注意 quirks：Safari 在无痕模式下设置 localstorge 值时会抛出 QuotaExceededError 的异常；
 - WebSocket、SharedWorker；
-#### webSocket 如何兼容低浏览器 ？
-Adobe Flash Socket 、ctiveX HTMLFile (IE) 、 基于 multipart编码发送XHR 、基于长轮询的 XHR。
-### webSocket如何兼容低浏览器？
-Adobe Flash Socket 、 ActiveX HTMLFile (IE) 、 基于 multipart 编码发送 XHR 、 基于长轮询的 XHR
+
+
 ### 线程与进程的区别
 一个程序至少有一个进程,一个进程至少有一个线程. 
 线程的划分尺度小于进程，使得多线程程序的并发性高。 
@@ -279,36 +277,3 @@ IE会先加载整个HTML文档的DOM，然后再去导入外部的CSS文件，�
 #### 解决方法：
 只要在<head>之间加入<link>或<script>标签。
 
-### WebSocket
-https://www.cnblogs.com/nnngu/p/9347635.html  
-#### 特点
-- 服务器可以主动向客户端推送信息，客户端也可以主动向服务器发送信息，是真正的双向平等对话
-- 建立在 TCP 协议之上，服务器端的实现比较容易。
-- 与 HTTP 协议有着良好的兼容性。默认端口也是80和443，并且握手阶段采用 HTTP 协议，因此握手时不容易屏蔽，能通过各种 HTTP 代理服务器。
-- 数据格式比较轻量，性能开销小，通信高效。
-- 可以发送文本，也可以发送二进制数据。
-- 没有同源限制，客户端可以与任意服务器通信。
-- 协议标识符是ws（如果加密，则为wss），服务器网址就是 URL。
-### WebSocket 是什么原理？为什么可以实现持久连接？
-https://www.cnblogs.com/cangqinglang/p/8331120.html    
-WebSocket是HTML5提供的在Web应用程序中客户端与服务器端之间进行的非HTTP的通信机制。使用WebSocket API可以在服务器与客户端之间建立一个非HTTP的双向连接。这个连接是实时的，也是永久的，除非被显示的关闭。   
-首先Websocket是基于HTTP协议的，或者说借用了HTTP的协议来完成一部分握手。在握手阶段
-```js
-
-// 请求头
-GET /chat HTTP/1.1
-Host: server.example.com
-Upgrade: websocket
-Connection: Upgrade
-Sec-WebSocket-Key: x3JJHMbDL1EzLkh9GBhXDw==   // 浏览器随机生成Base64 encode, 验证是不是真的是 WebSocket。
-Sec-WebSocket-Protocol: chat, superchat  // 用户定义的字符串，用来区分同 URL 下，不同的服务所需要的协议。
-Sec-WebSocket-Version: 13 // 告诉服务器所使用的 WebSocket Draft （协议版本）
-Origin: http://example.com
-// 响应头
-HTTP/1.1 101 Switching Protocols
-Upgrade: websocket
-Connection: Upgrade
-Sec-WebSocket-Accept: HSmrc0sMlYUkAGmm5OPpG2HaGWk=
-Sec-WebSocket-Protocol: chat
-```
- 
