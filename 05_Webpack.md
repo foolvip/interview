@@ -70,6 +70,8 @@ https://zhuanlan.zhihu.com/p/44438844
 - 使用Happypack 实现多线程加速编译
 - 使用webpack-uglify-parallel来提升uglifyPlugin的压缩速度。 原理上webpack-uglify-parallel采用了多核并行压缩来提升压缩速度
 - 使用Tree-shaking和Scope Hoisting来剔除多余代码
+
+### Tree Shaking原理
 ### webpack的入口文件怎么配置，多个入口怎么分割
 ### 看到你的项目用到了Babel的一个插件，transform-runtime以及stage-2，说下他们的作用
 ### webpack配置用的webpack.optimize.UglifyJsPlugin,有没有觉得压缩速度很慢，有什么办法提升速度。
