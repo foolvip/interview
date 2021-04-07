@@ -72,6 +72,27 @@ https://zhuanlan.zhihu.com/p/44438844
 - 使用Tree-shaking和Scope Hoisting来剔除多余代码
 
 ### Tree Shaking原理
+理解链接：https://zhuanlan.zhihu.com/p/32831172     
+https://juejin.cn/post/6844903544756109319     
+https://juejin.cn/post/6844903544760336398  
+#### 本质
+Tree-shaking的本质是消除无用的js代码。无用代码消除在广泛存在于传统的编程语言编译器中，编译器可以判断出某些代码根本不影响输出，然后消除这些代码，这个称之为DCE（dead code elimination）   
+#### Dead Code 一般具有以下几个特征
+- 代码不会被执行，不可到达
+- 代码执行的结果不会被用到
+- 代码只会影响死变量（只写不读）
+#### ES6 module 特点：
+- 只能作为模块顶层的语句出现
+- import 的模块名只能是字符串常量
+- import binding 是 immutable的
+
+ES6模块依赖关系是确定的，和运行时的状态无关，可以进行可靠的静态分析，这就是tree-shaking的基础。     
+所谓静态分析就是不执行代码，从字面量上对代码进行分析，ES6之前的模块化，比如我们可以动态require一个模块，只有执行后才知道引用的什么模块，这个就不能通过静态分析去做优化。 
+这是 ES6 modules 在设计时的一个重要考量，也是为什么没有直接采用 CommonJS，正是基于这个基础上，才使得 tree-shaking 成为可能，这也是为什么 rollup 和 webpack 2 都要用 ES6 module syntax 才能 tree-shaking。
+
+
+ES6的模块引入是静态分析的，故而可以在编译时正确判断到底加载了什么代码。
+分析程序流，判断哪些变量未被使用、引用，进而删除此代码。
 ### webpack的入口文件怎么配置，多个入口怎么分割
 ### 看到你的项目用到了Babel的一个插件，transform-runtime以及stage-2，说下他们的作用
 ### webpack配置用的webpack.optimize.UglifyJsPlugin,有没有觉得压缩速度很慢，有什么办法提升速度。

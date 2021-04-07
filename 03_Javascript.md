@@ -125,6 +125,15 @@ Object
 - javascript预编译：就是通过语法分析和预解析构造合法的语法分析树，读取变量和函数的声明，并确定其作用域即生效范围。  
 - javascript执行：执行具体的代码，JavaScript引擎在执行每个函数实例时，都会创建一个执行环境和活动对象（它们属于宿主对象，与函数实例的生命周期保持一致）
 函数声明在JS解析时进行函数提升，因此在同一个作用域内，不管函数声明在哪里定义，该函数都可以进行调用。而函数表达式的值是在JS运行时确定，并且在表达式赋值完成后，该函数才能调用。  
+### callee属性
+每一个对象都有自己的属性，而arguments有一个callee属性，返回正被执行的Function对象。
+```js
+function f3() {
+    console.log(arguments.callee === f3); // true
+}
+f3('name', 'age');
+```
+
 ### 基本类型和引用类型的区别和相同点
 项 | 基本类型 | 引用类型
 :-: | :-: | :-: 
@@ -148,6 +157,7 @@ https://tylermcginnis.com/ultimate-guide-to-execution-contexts-hoisting-scopes-a
 - 变量对象(Variable object，VO)
 - 作用域链(Scope chain)
 - this
+
 ### 浏览器引擎说明
 浏览器内核分两个部分：渲染引擎和JS引擎，但由于JS引擎越来越独立，所以现在通常所谓的浏览器内核也就单指浏览器所采用的渲染引擎了      
 渲染引擎：负责对网页语法的解释（如标准通用标记语言下的一个应用HTML、JavaScript）并渲染（显示）网页     
@@ -175,11 +185,55 @@ JS引擎：单线程引擎，负责执行JS代码
 - 由名称和对应值（undefined）组成一个变量对象的属性被创建；
 - 如果变量名称跟已经声明的形式参数或函数相同，则变量声明不会干扰已经存在的这类属性
 ### 闭包
+https://zhuanlan.zhihu.com/p/22486908  
+https://www.cnblogs.com/rubylouvre/p/3345294.html   
+https://blog.csdn.net/yummy_go/article/details/50663081  
 闭包是指有权访问另一个函数作用域中的变量的函数；
+```js
+function a() {
+  let i = 0;
+  function b () {
+    alert(a + b)
+  }
+  return b;
+}
+let c = a();
+c();
+// 函数a的内部函数b被函数a外的一个变量引用的时候，就创建了一个闭包。
+```
+#### 使用场景
+1. 闭包可以读取函数内部变量   
+2. 将函数内部变量的值始终保存在内存中
+3. 保护函数内的变量安全：如迭代器、生成器。
+4. 在内存中维持变量：如果缓存数据、柯里化。
+闭包可以运用于高阶函数或者是函数柯里化等场景。  
+#### 弊端P(80、183)
+IE7之前的浏览器的垃圾收集器是根据内存分配量运行的，像变量是256个，达到临界值，垃圾收集器就会运行。如果一个脚本中包含很多变量。那么在该脚本生命周期，垃圾收集器就不得不频繁运行。肯能造成内存泄漏。
 ### 为什么要将JS源文件的全部内容包装在一个函数中
 它可以创建一个私有命名空间，从而有助于避免不同JS模块和库之间潜在的名称冲突。
 ### 原型链，对象，构造函数之间的联系
 https://blog.csdn.net/cc18868876837/article/details/81211729
+```js
+function Test（）{};
+const test = new Test();
+// console.log(Function.__proto__);
+// console.log(Function.prototype);
+Function.__proto__ === Function.prototype; // 由console得出值相同，因此为规定
+
+// var obj = {}; 
+// var obj = new Object(); Function
+Object.__proto__ === Function.prototype;
+
+// test.constructor --指向--> 实例化test对象的构造函数
+console.log(test.constructor === Test);
+
+// constructor可以更改
+function Test1() {
+  this.a = 111;
+}
+test.constructor = Test1
+console.log(Test1)
+```
 ### 创建对象的方式（红P144）
 - 工厂模式
 - 构造函数
@@ -225,17 +279,34 @@ DOM3级进一步扩展了DOM，引入了以同于方式加载和保存文档的�
 ### 事件的三个阶段
 事件捕获、目标阶段、事件冒泡
 ### 平时怎么解决跨域的，以及后续JSONP的原理和实现，以及cors怎么设置（head信息字段）
+同源策略是一种约定，由Netscape公司1995年引入浏览器，它是浏览器最核心也最基本的安全功能，如果缺少了同源策略，浏览器很容易受到XSS、CSFR等攻击。所谓同源是指"协议+域名+端口"三者相同，即便两个不同的域名指向同一个ip地址，也非同源。 
+#### 同源策略限制以下几种行为：
+- Cookie、LocalStorage 和 IndexDB 无法读取，只支持同域；
+- DOM和JS对象无法获得
+- AJAX 请求不能发送
+#### 解决方法
+- jsonp（ JSON with padding）：只能发送get请求
+- cors
+- postMessage
+- document.domain
+- window.name
+- location.hash
+- http-proxy
+- nginx
+- websocket
+
+
+
 ### 说下深拷贝的实现原理? JSON.stringify,JOSN.parse这种实现的缺点
 - 拷贝后两者之间不再存在共享关系  
 - 拷贝之后数据类型不能发生改变，也就是需要判断是数组的时候，需要进行单独递归的遍历  
 - 在继承的时候，我们通过原型属性实现原型对象属性的继承，在进行深拷贝的时候，我们首先需要提出原型对象上的属性；通过hasOwnProperty方法来进行筛选
 ### 尾递归的实现原理
-- 什么是函数柯里化？说下JS的api中有哪些应用到了函数柯里化的实现？   
-js中bing函数和reduce方法用到了
-- ES6的箭头函数中this问题，以及拓展运算符
-- JS模块化commonjs，UMD，CMD规范的了解，以及ES6的模块化与其他几种的区别，以及出现的意义
-- getBoundignClientRect获取的top和offsetTop获取的top区别
-- session,cookie, sessionStorage, localstorage区别
+### 什么是函数柯里化？说下JS的api中有哪些应用到了函数柯里化的实现？   
+### js中bing函数和reduce方法用到了
+### ES6的箭头函数中this问题，以及拓展运算符
+### getBoundignClientRect获取的top和offsetTop获取的top区别
+### session,cookie, sessionStorage, localstorage区别
 ### AMD、CMD、Commonjs的区别,以及ES6的模块化与其他几种的区别，以及出现的意义
 #### 区别
 https://www.zhihu.com/question/20351507/answer/14859415  

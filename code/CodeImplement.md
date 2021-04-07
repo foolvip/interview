@@ -12,6 +12,37 @@ false 转为数字是 0      // Number(false) 返回0
 ```
 [ ] 转数字是0,转布尔值是true
 
+
+### 重载
+```js
+function addMethod (obj, name, fn) {
+    var old = obj[name];
+    obj[name] = function () {
+        if (fn.length === arguments.length) {
+            return fn.apply(this, arguments)
+        } else if (typeof old === 'function') {
+            return old.apply(this, arguments)
+        }
+    }
+}
+
+var person = {userName: 'bear鲍的小小熊'}
+
+addMethod(person, 'show', function () {
+    console.log(this.userName + '---->' + 'show1')
+})
+addMethod(person, 'show', function (str) {
+    console.log(this.userName + '---->' + str)
+})
+addMethod(person, 'show', function (a, b) {
+    console.log(this.userName + '---->' + (a + b))
+})
+person.show()  
+person.show('bkl')
+person.show(10, 20)
+
+```
+
 ### call,apply,bind函数实现
 #### call
 ```js
