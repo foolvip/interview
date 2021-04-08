@@ -46,29 +46,7 @@ UDP是一个非连接的协议，传输数据之前源端和终端不建立连�
 7. 服务器返回一个HTTP响应  
 8. 浏览器解析渲染页面  
 9. TCP四次挥手  
-### 浏览器实现缓存机制：
-https://juejin.im/entry/5ad86c16f265da505a77dca4   
-强制缓存、协商缓存   
-浏览器的缓存机制也就是我们说的HTTP缓存机制，其机制是根据HTTP报文的缓存标识进行的.  
-### 缓存
-http权威指南第七章（170）  
-缓存是请求资源的副本   
-缓存的好处：  
-缓存在宏观上可以分成两类：私有缓存和共享缓存。共享缓存就是那些能被各级代理缓存的缓存。私有缓存就是用户专享的，各级代理不能缓存的缓存。   
-微观上可以分下面三类：浏览器缓存、代理服务器缓存、网关缓存、数据库缓存   
-https://juejin.im/post/5a6c87c46fb9a01ca560b4d7  
-#### 浏览器缓存
-浏览器对于缓存的处理是根据第一次请求资源时返回的响应头来确定的。  
-浏览器怎么确定一个资源该不该缓存，如何去缓存呢❓响应头！   
-强缓存阶段(本地缓存：Expires,Cache-Control)，服务器响应的header中会用两个字段来表明——Expires和Cache-Control。   
-Cache-Control有很多属性，不同的属性代表的意义也不同。  
-private：客户端可以缓存  
-public：客户端和代理服务器都可以缓存  
-max-age=t：缓存内容将在t秒后失效  
-no-cache：需要使用协商缓存来验证缓存数据  
-no-store：所有内容都不会缓存。  
-协商缓存阶段：是强制缓存失效后，浏览器携带缓存标识向服务器发起请求，由服务器根据缓存标识决定是否使用缓存的过程    
-两种缓存方案（If-none-match/ETag,If-modified-since/last-modified）  
+
 ### http三次握手四次挥手
 https://blog.csdn.net/xiaozhuxmen/article/details/51934706  
 https://zhuanlan.zhihu.com/p/77334450?utm_source=wechat_session&utm_medium=social&utm_oi=667801099197747200  
